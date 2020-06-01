@@ -1,0 +1,40 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: black;
+}
+
+.settings-image {
+  position: fixed;
+  opacity: 0.5;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-image: url("/images/settings.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 9999;
+}
+
+.settings-icon {
+  position: absolute;
+  color: white;
+  bottom: 2px;
+  right: 5px;
+  z-index: 9999;
+}
+
+p {
+  font-size: medium;
+  line-height: 15px;
+}
