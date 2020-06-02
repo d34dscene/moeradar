@@ -23,6 +23,7 @@ function trigger(tabs) {
       .catch(onError);
   }
 }
+
 browser.commands.onCommand.addListener(function (command) {
   if (command == "toggle-feature") {
     browser.tabs

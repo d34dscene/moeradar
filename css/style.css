@@ -4,7 +4,8 @@ body {
 }
 
 body {
-  background-color: #1A1A1D;
+  background-image: url("/images/background.png");
+  background-repeat: repeat;
 }
 
 .settings-image {
