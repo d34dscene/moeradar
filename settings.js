@@ -1,5 +1,5 @@
 var sonarr_url;
-function saveOptions(e) {
+function saveOptions() {
   browser.storage.sync.set({
     sonarr_api: document.querySelector("#sonarr_api").value,
     sonarr_url: document.querySelector("#sonarr_url").value,
@@ -10,10 +10,7 @@ function saveOptions(e) {
     radarr_path: document.querySelector("#radarr_path").value,
     radarr_quality: document.querySelector("#radarr_quality").value,
   });
-  e.preventDefault();
-  location.reload();
 }
-
 function restoreOptions() {
   function setCurrentChoice(result) {
     getDropdownDataSonarr(result.sonarr_url, result.sonarr_api);
@@ -46,7 +43,6 @@ function restoreOptions() {
   ]);
   getter.then(setCurrentChoice, onError);
 }
-
 function getDropdownDataSonarr(url, api) {
   let sonarr_dropdown = document.getElementById("sonarr_quality");
 
@@ -107,5 +103,18 @@ function getDropdownDataRadarr(url, api) {
       console.log("request failed", error);
     });
 }
-document.addEventListener("DOMContentLoaded", restoreOptions);
-document.querySelector("form").addEventListener("submit", saveOptions);
+function reload(){
+  location.reload();
+}
+document.addEventListener("submit", saveOptions);
+var elem = document.querySelector("form");
+elem.onkeydown = function () {
+  saveOptions();
+};
+elem.onpaste = function () {
+  saveOptions();
+};
+elem.onkeyup = function () {
+  saveOptions();
+};
+window.addEventListener("load", restoreOptions);

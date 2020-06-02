@@ -19,13 +19,25 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "moe-tracker@nightcloud.moe",
+      "id": "moeradar@nightcloud.moe",
       "strict_min_version": "57.0a1"
+    }
+  },
+  "commands": {
+    "toggle-feature": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Ereignis 'toggle-feature' senden"
     }
   },
   "browser_action": {
     "browser_style": true,
     "default_title": "Moeradar"
   },
-  "permissions": ["storage", "*://*/*"]
+  "permissions": [
+    "notifications",
+    "storage",
+    "<all_urls>"
+  ]
 }

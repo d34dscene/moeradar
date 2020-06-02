@@ -6,75 +6,84 @@
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 
 <body style="padding: 2em;">
 
-  <div class="settings-image"></div>
-
-  <div class="container-fluid content text-light">
-    <form>
-      <div class="form-group">
-        <div class="row">
-          <div class="col-12">
-            <label for="sonarr_url">Sonarr URL</label>
-            <input type="text" class="form-control" id="sonarr_url">
-          </div>
-          <div class="col-12">
-            <label for="sonarr_api">Sonarr API</label>
-            <input type="text" class="form-control" id="sonarr_api">
-            <small id="sonarrHelp" class="form-text text-light mb-3">
-              You can find the key in Settings > General > API Key
-            </small>
-          </div>
-          <div class="col-6">
-            <label for="sonarr_path">Sonarr Path</label>
-            <input type="text" class="form-control" id="sonarr_path">
-            <small id="sonarrHelp" class="form-text text-light mb-3">
-              Example: /sonarr/anime/
-            </small>
-          </div>
-          <div class="col-6">
-            <label for="sonarr_quality">Sonarr Quality Profile</label>
-            <select class="custom-select" id="sonarr_quality">
-              <option value="0">Choose Quality</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="row">
-          <div class="col-12">
-            <label for="radarr_url">Radarr URL</label>
-            <input type="text" class="form-control" id="radarr_url">
-          </div>
-          <div class="col-12">
-            <label for="radarr_api">Radarr API</label>
-            <input type="text" class="form-control" id="radarr_api">
-            <small id="RadarrHelp" class="form-text text-light mb-3">
-              You can find the key in Settings > General > API Key
-            </small>
-          </div>
-          <div class="col-6">
-            <label for="radarr_path">Radarr Path</label>
-            <input type="text" class="form-control" id="radarr_path">
-            <small id="sonarrHelp" class="form-text text-light mb-1">
-              Example: /radarr/anime/
-            </small>
-          </div>
-          <div class="col-6">
-            <label for="radarr_quality">Radarr Quality Profile</label>
-            <select class="custom-select" id="radarr_quality">
-              <option selected>Choose Quality</option>
-            </select>
+  <form>
+    <div class="container content text-light">
+      <div class="row">
+        <div class="card col-12 mb-5 bg-transparent">
+          <div class="card-body special-card">
+            <h5 class="card-title">Sonarr</h5>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-12">
+                  <label for="sonarr_url">Sonarr URL</label>
+                  <input type="text" class="form-control" id="sonarr_url">
+                </div>
+                <div class="col-12">
+                  <label for="sonarr_api">Sonarr API</label>
+                  <input type="text" class="form-control" id="sonarr_api">
+                  <small id="sonarrHelp" class="form-text text-light mb-3">
+                    You can find the key in Settings > General > API Key
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="sonarr_path">Sonarr Path</label>
+                  <input type="text" class="form-control" id="sonarr_path">
+                  <small id="sonarrHelp" class="form-text text-light mb-3">
+                    Example: /sonarr/anime/
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="sonarr_quality">Sonarr Quality Profile</label>
+                  <select class="custom-select" id="sonarr_quality">
+                    <option value="0">Choose Quality</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="card col-12 bg-transparent mb-3">
+          <div class="card-body special-card">
+            <h5 class="card-title">Radarr</h5>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-12">
+                  <label for="radarr_url">Radarr URL</label>
+                  <input type="text" class="form-control" id="radarr_url">
+                </div>
+                <div class="col-12">
+                  <label for="radarr_api">Radarr API</label>
+                  <input type="text" class="form-control" id="radarr_api">
+                  <small id="RadarrHelp" class="form-text text-light mb-3">
+                    You can find the key in Settings > General > API Key
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="radarr_path">Radarr Path</label>
+                  <input type="text" class="form-control" id="radarr_path">
+                  <small id="sonarrHelp" class="form-text text-light mb-1">
+                    Example: /radarr/anime/
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="radarr_quality">Radarr Quality Profile</label>
+                  <select class="custom-select" id="radarr_quality">
+                    <option selected>Choose Quality</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Save"></input>
       </div>
-      <button type="submit" class="btn btn-primary" id="submit">Save</button>
-    </form>
-  </div>
-
+    </div>
+  </form>
   <script type="text/javascript" src="settings.js"></script>
 </body>
 

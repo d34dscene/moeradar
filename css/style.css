@@ -4,7 +4,7 @@ body {
 }
 
 body {
-  background-color: black;
+  background-color: #1A1A1D;
 }
 
 .settings-image {
@@ -26,15 +26,7 @@ body {
   z-index: 9999;
 }
 
-.settings-icon {
-  position: absolute;
-  color: white;
-  bottom: 2px;
-  right: 5px;
-  z-index: 9999;
-}
-
-p {
-  font-size: medium;
-  line-height: 15px;
+.special-card {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 5px;
 }
