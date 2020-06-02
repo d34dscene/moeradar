@@ -1,42 +1,39 @@
-var sonarr_url;
-var sonarr_api;
-var sonarr_path;
-var sonarr_quality;
-var radarr_url;
-var radarr_api;
-var radarr_path;
-var radarr_quality;
-var anime_title = document
-  .querySelector('div[class="content"]>h1')
-  .textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
-var type = document
-  .querySelector('div[class="data-set"]')
-  .childNodes[2].textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
+/*
+ * Loading necessary data from website into global variables
+ */
+function loadData() {
+  anime_title = document
+    .querySelector('div[class="content"]>h1')
+    .textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
+  type = document
+    .querySelector('div[class="data-set"]')
+    .childNodes[2].textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
 
-Promise.resolve(
-  browser.storage.sync.get([
-    "sonarr_url",
-    "sonarr_api",
-    "sonarr_path",
-    "sonarr_quality",
-    "radarr_url",
-    "radarr_api",
-    "radarr_path",
-    "radarr_quality",
-  ])
-).then(function (result) {
-  sonarr_url = result.sonarr_url;
-  sonarr_api = result.sonarr_api;
-  sonarr_path = result.sonarr_path;
-  sonarr_quality = result.sonarr_quality;
-  radarr_url = result.radarr_url;
-  radarr_api = result.radarr_api;
-  radarr_path = result.radarr_path;
-  radarr_quality = result.radarr_quality;
-});
+  Promise.resolve(
+    browser.storage.sync.get([
+      "sonarr_url",
+      "sonarr_api",
+      "sonarr_path",
+      "sonarr_quality",
+      "radarr_url",
+      "radarr_api",
+      "radarr_path",
+      "radarr_quality",
+    ])
+  ).then(function (result) {
+    sonarr_url = result.sonarr_url;
+    sonarr_api = result.sonarr_api;
+    sonarr_path = result.sonarr_path;
+    sonarr_quality = result.sonarr_quality;
+    radarr_url = result.radarr_url;
+    radarr_api = result.radarr_api;
+    radarr_path = result.radarr_path;
+    radarr_quality = result.radarr_quality;
+  });
+  createElement();
+}
 
 function createElement() {
-  console.log(anime_title, type);
   var button = document.createElement("a");
   var aniElement = document.querySelector('div[class="actions"]');
   var text;
@@ -70,16 +67,25 @@ function createElement() {
     );
   }
 }
+/*
+ * Decide the type of media
+ */
+function decideContent() {
+  if (type == "TV") {
+    getInfoSonarr();
+    return "Sonarr";
+  }
+  if (type == "Movie") {
+    getInfoRadarr();
+    return "Radarr";
+  }
+}
 
+/*
+ * Get necessary info from sonarr via series lookup
+ */
 async function getInfoSonarr() {
-  let params = {
-    term: anime_title,
-    apikey: sonarr_api,
-  };
-  let query = Object.keys(params)
-    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-    .join("&");
-  let url = addLookupSonarr() + query;
+  let url = createLookupSonarr();
 
   fetch(url, {
     method: "GET",
@@ -87,7 +93,7 @@ async function getInfoSonarr() {
     .then((data) => data.text())
     .then((json) => {
       var parse_me = JSON.parse(json)[0];
-      parseDataSonarr(
+      generateRequestSonarr(
         parse_me.tvdbId,
         parse_me.title,
         parse_me.profileId,
@@ -101,9 +107,98 @@ async function getInfoSonarr() {
     });
 }
 
-async function parseDataSonarr(tv, titl, pId, slug, image, season) {
+/*
+ * Send data to Sonarr and add series
+ */
+async function sendDataSonarr(params) {
   data = {};
 
+  let url = generatedLinkSonarr;
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(params),
+  })
+    .then((data) => data.json())
+    .then((json) => {
+      console.log("Sent to Sonarr!", json);
+    })
+    .catch(function (error) {
+      console.log("request failed", error);
+    });
+}
+
+/*
+ * Get necessary info from radarr via movie lookup
+ */
+async function getInfoRadarr() {
+  let url = createLookupRadarr();
+
+  fetch(url, {
+    method: "GET",
+  })
+    .then((data) => data.text())
+    .then((json) => {
+      var parse_me = JSON.parse(json)[0];
+      generateRequestRadarr(
+        parse_me.tmdbId,
+        parse_me.title,
+        parse_me.profileId,
+        parse_me.titleSlug,
+        parse_me.images,
+        parse_me.year
+      );
+    })
+    .catch(function (error) {
+      console.log("request failed", error);
+    });
+}
+
+/*
+ * Send data to Radarr and add movie
+ */
+async function sendDataRadarr(params) {
+  data = {};
+
+  let url = generatedLinkRadarr;
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(params),
+  })
+    .then((data) => data.json())
+    .then((json) => {
+      console.log("Sent to Radarr!", json);
+    })
+    .catch(function (error) {
+      console.log("request failed", error);
+    });
+}
+
+/*
+ * Generate a lookup link for Sonarr
+ */
+function createLookupSonarr() {
+  let params = {
+    term: anime_title,
+    apikey: sonarr_api,
+  };
+  let query = Object.keys(params)
+    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+    .join("&");
+  return sonarr_url.concat("/api/series/lookup?") + query;
+}
+
+/*
+ * Generate a request link for Sonarr to add the series
+ */
+function generateRequestSonarr(tv, titl, pId, slug, image, season) {
   if (sonarr_path.endsWith("/")) {
     sonarr_path = sonarr_path.concat(titl);
   } else {
@@ -133,25 +228,14 @@ async function parseDataSonarr(tv, titl, pId, slug, image, season) {
   let query = Object.keys(params)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
     .join("&");
-  let url = addPostSonarr() + query;
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(params),
-  })
-    .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Sonarr!", json);
-    })
-    .catch(function (error) {
-      console.log("request failed", error);
-    });
+  generatedLinkSonarr = sonarr_url.concat("/api/series?") + query;
+  sendDataSonarr(params);
 }
 
-async function getInfoRadarr() {
+/*
+ * Generate a lookup link for Radarr
+ */
+function createLookupRadarr() {
   let params = {
     term: anime_title,
     apikey: radarr_api,
@@ -159,30 +243,13 @@ async function getInfoRadarr() {
   let query = Object.keys(params)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
     .join("&");
-  let url = addLookupRadarr() + query;
-
-  fetch(url, {
-    method: "GET",
-  })
-    .then((data) => data.text())
-    .then((json) => {
-      var parse_me = JSON.parse(json)[0];
-      parseDataRadarr(
-        parse_me.tmdbId,
-        parse_me.title,
-        parse_me.profileId,
-        parse_me.titleSlug,
-        parse_me.images,
-        parse_me.year
-      );
-    })
-    .catch(function (error) {
-      console.log("request failed", error);
-    });
+  return radarr_url.concat("/api/movie/lookup?") + query;
 }
-async function parseDataRadarr(tmdb, titl, pId, slug, image, ye) {
-  data = {};
 
+/*
+ * Generate a request link for Radarr to add the movie
+ */
+function generateRequestRadarr(tmdb, titl, pId, slug, image, ye) {
   if (radarr_path.endsWith("/")) {
     radarr_path = radarr_path.concat(titl);
   } else {
@@ -209,37 +276,16 @@ async function parseDataRadarr(tmdb, titl, pId, slug, image, ye) {
   let query = Object.keys(params)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
     .join("&");
-  let url = addPostRadarr() + query;
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(params),
-  })
-    .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Radarr!", json);
-    })
-    .catch(function (error) {
-      console.log("request failed", error);
-    });
-}
-function addLookupSonarr() {
-  return sonarr_url.concat("/api/series/lookup?");
+  generatedLinkRadarr = radarr_url.concat("/api/movie?") + query;
+  sendDataRadarr(params);
 }
 
-function addPostSonarr() {
-  return sonarr_url.concat("/api/series?");
-}
-
-function addLookupRadarr() {
-  return radarr_url.concat("/api/movie/lookup?");
-}
-
-function addPostRadarr() {
-  return radarr_url.concat("/api/movie?");
-}
-
-window.onload = createElement;
+window.addEventListener("load", loadData);
+browser.runtime.onMessage.addListener((request) => {
+  var type = decideContent();
+  if (type === undefined) {
+    console.log("Not a series/movie!");
+  } else {
+    return Promise.resolve({ response: "Sending to " + type + "..." });
+  }
+});

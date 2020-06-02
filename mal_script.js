@@ -279,5 +279,9 @@ function generateRequestRadarr(tmdb, titl, pId, slug, image, ye) {
 window.addEventListener("load", loadData);
 browser.runtime.onMessage.addListener((request) => {
   var type = decideContent();
-  return Promise.resolve({ response: "Sending to " + type + "..." });
+  if (type === undefined) {
+    console.log("Not a series/movie!");
+  } else {
+    return Promise.resolve({ response: "Sending to " + type + "..." });
+  }
 });
