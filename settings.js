@@ -1,14 +1,17 @@
-var sonarr_url;
 function saveOptions() {
   browser.storage.sync.set({
     sonarr_api: document.querySelector("#sonarr_api").value,
     sonarr_url: document.querySelector("#sonarr_url").value,
     sonarr_path: document.querySelector("#sonarr_path").value,
-    sonarr_quality: document.querySelector("#sonarr_quality").value,
+    sonarr_quality: document.querySelector("#sonarr_quality").options[
+      document.querySelector("#sonarr_quality").value
+    ].text,
     radarr_api: document.querySelector("#radarr_api").value,
     radarr_url: document.querySelector("#radarr_url").value,
     radarr_path: document.querySelector("#radarr_path").value,
-    radarr_quality: document.querySelector("#radarr_quality").value,
+    radarr_quality: document.querySelector("#radarr_quality").options[
+      document.querySelector("#radarr_quality").value
+    ].text,
   });
 }
 function restoreOptions() {
@@ -21,10 +24,10 @@ function restoreOptions() {
     document.querySelector("#radarr_url").value = result.radarr_url || "";
     document.querySelector("#sonarr_path").value = result.sonarr_path || "";
     document.querySelector("#radarr_path").value = result.radarr_path || "";
-    document.querySelector("#sonarr_quality").value =
-      result.sonarr_quality || "0";
-    document.querySelector("#radarr_quality").value =
-      result.radarr_quality || "0";
+    document.querySelector("#sonarr_quality").options[0].text =
+      result.sonarr_quality;
+    document.querySelector("#radarr_quality").options[0].text =
+      result.radarr_quality;
   }
 
   function onError(error) {
@@ -43,7 +46,7 @@ function restoreOptions() {
   ]);
   getter.then(setCurrentChoice, onError);
 }
-function getDropdownDataSonarr(url, api) {
+async function getDropdownDataSonarr(url, api) {
   let sonarr_dropdown = document.getElementById("sonarr_quality");
 
   let auth = {
@@ -73,6 +76,7 @@ function getDropdownDataSonarr(url, api) {
       console.log("request failed", error);
     });
 }
+
 function getDropdownDataRadarr(url, api) {
   let radarr_dropdown = document.getElementById("radarr_quality");
 
@@ -103,7 +107,7 @@ function getDropdownDataRadarr(url, api) {
       console.log("request failed", error);
     });
 }
-function reload(){
+function reload() {
   location.reload();
 }
 document.addEventListener("submit", saveOptions);
