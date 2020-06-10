@@ -88,7 +88,6 @@ Promise.resolve(
  * Decide media type
  */
 function decide(title, type) {
-  console.log(sonarr_url);
   if (["TV", "tv_show", "TV-Series"].indexOf(type) >= 0) {
     if (isResolvedS) {
       getInfoSonarr(title);
