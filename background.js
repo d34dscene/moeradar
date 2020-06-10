@@ -26,51 +26,7 @@ function trigger(tabs) {
     browser.tabs
       .sendMessage(tab.id, { send: "" })
       .then((response) => {
-        let dec = decide(response.title, response.media);
-        if (dec === 0) {
-          if (isResolvedS) {
-            getInfoSonarr(response.title);
-            browser.notifications.create({
-              type: "basic",
-              iconUrl: browser.extension.getURL("images/send.svg"),
-              title: response.title,
-              message: "\nYour request was successfully sent to Sonarr!",
-            });
-          } else {
-            browser.notifications.create({
-              type: "basic",
-              iconUrl: browser.extension.getURL("images/clear.svg"),
-              title: "Settings missing",
-              message: "\nPlease check your settings for Sonarr!",
-            });
-          }
-        }
-        if (dec === 1) {
-          if (isResolvedR) {
-            getInfoRadarr(response.title);
-            browser.notifications.create({
-              type: "basic",
-              iconUrl: browser.extension.getURL("images/send.svg"),
-              title: "title",
-              message: "\nYour request was successfully sent to Radarr!",
-            });
-          } else {
-            browser.notifications.create({
-              type: "basic",
-              iconUrl: browser.extension.getURL("images/clear.svg"),
-              title: "Settings missing",
-              message: "\nPlease check your settings for Radarr!",
-            });
-          }
-        }
-        if (dec === 2) {
-          browser.notifications.create({
-            type: "basic",
-            iconUrl: browser.extension.getURL("images/error.svg"),
-            title: "Wrong media type",
-            message: "\nThat's neither a series nor a movie... Baka!",
-          });
-        }
+        decide(response.title, response.media);
       })
       .catch(onError);
   }
@@ -133,12 +89,47 @@ Promise.resolve(
  */
 function decide(title, type) {
   if (["TV", "tv_show", "TV-Series"].indexOf(type) >= 0) {
-    return 0;
+    if (isResolvedS) {
+      getInfoSonarr(title);
+      browser.notifications.create({
+        type: "basic",
+        iconUrl: browser.extension.getURL("images/send.svg"),
+        title: title,
+        message: "\nYour request was successfully sent to Sonarr!",
+      });
+    } else {
+      browser.notifications.create({
+        type: "basic",
+        iconUrl: browser.extension.getURL("images/clear.svg"),
+        title: "Settings missing",
+        message: "\nPlease check your settings for Sonarr!",
+      });
+    }
+  } else if (["Movie", "movie"].indexOf(type) >= 0) {
+    if (isResolvedR) {
+      getInfoRadarr(title);
+      browser.notifications.create({
+        type: "basic",
+        iconUrl: browser.extension.getURL("images/send.svg"),
+        title: title,
+        message: "\nYour request was successfully sent to Radarr!",
+      });
+    } else {
+      browser.notifications.create({
+        type: "basic",
+        iconUrl: browser.extension.getURL("images/clear.svg"),
+        title: "Settings missing",
+        message: "\nPlease check your settings for Radarr!",
+      });
+    }
+  } else {
+    browser.notifications.create({
+      type: "basic",
+      iconUrl: browser.extension.getURL("images/error.svg"),
+      title: "Wrong media type",
+      message: "\nThat's neither a series nor a movie... B-baka!",
+    });
   }
-  if (["Movie", "movie"].indexOf(type) >= 0) {
-    return 1;
-  }
-  return 2;
 }
 
 /*
