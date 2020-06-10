@@ -8,20 +8,6 @@ body {
   background-repeat: repeat;
 }
 
-.settings-image {
-  position: fixed;
-  opacity: 0.5;
-  height: 100%;
-  left: 0;
-  right: 0;
-  top: 0;
-  background-image: url("/images/settings.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  z-index: 1;
-}
-
 .content {
   position: relative;
   z-index: 9999;
