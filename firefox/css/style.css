@@ -1,0 +1,19 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: url("/img/background.png");
+  background-repeat: repeat;
+}
+
+.content {
+  position: relative;
+  z-index: 9999;
+}
+
+.special-card {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 5px;
+}

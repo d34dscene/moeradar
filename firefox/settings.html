@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body style="padding: 2em;">
+
+  <form>
+    <div class="container content text-light">
+      <div class="row">
+        <div class="card col-12 mb-5 bg-transparent">
+          <div class="card-body special-card">
+            <h5 class="card-title">Sonarr</h5>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-12">
+                  <label for="sonarr_url">URL</label>
+                  <input type="text" class="form-control" id="sonarr_url">
+                </div>
+                <div class="col-12">
+                  <label for="sonarr_api">API</label>
+                  <input type="text" class="form-control" id="sonarr_api">
+                  <small id="sonarrHelp" class="form-text text-light mb-3">
+                    You can find the key in Settings > General > API Key
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="sonarr_path">Path</label>
+                  <input type="text" class="form-control" id="sonarr_path">
+                  <small id="sonarrHelp" class="form-text text-light mb-3">
+                    Example: /sonarr/series/
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="sonarr_quality">Quality Profile</label>
+                  <select class="custom-select" id="sonarr_quality">
+                    <option value="0">Choose Quality</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card col-12 bg-transparent mb-3">
+          <div class="card-body special-card">
+            <h5 class="card-title">Radarr</h5>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-12">
+                  <label for="radarr_url">URL</label>
+                  <input type="text" class="form-control" id="radarr_url">
+                </div>
+                <div class="col-12">
+                  <label for="radarr_api">API</label>
+                  <input type="text" class="form-control" id="radarr_api">
+                  <small id="RadarrHelp" class="form-text text-light mb-3">
+                    You can find the key in Settings > General > API Key
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="radarr_path">Path</label>
+                  <input type="text" class="form-control" id="radarr_path">
+                  <small id="sonarrHelp" class="form-text text-light mb-1">
+                    Example: /radarr/movies/
+                  </small>
+                </div>
+                <div class="col-6">
+                  <label for="radarr_quality">Quality Profile</label>
+                  <select class="custom-select" id="radarr_quality">
+                    <option value="0">Choose Quality</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div class="container">
+      <input type="submit" class="btn btn-primary col-lg-1 col-12 mb-5" value="Save"></input>
+    </div>
+    </div>
+    </div>
+  </form>
+  <script type="text/javascript" src="settings.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+{
+  "manifest_version": 2,
+  "name": "Moeradar",
+  "version": "1.0",
+  "description": "Add anime directly to sonarr/radarr",
+  "icons": { "48": "img/egg.png" },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://myanimelist.net/anime/*"],
+      "js": ["site_scripts/mal_script.js"]
+    },
+    {
+      "matches": ["*://anilist.co/anime/*"],
+      "js": ["site_scripts/anilist_script.js"]
+    },
+    {
+      "matches": ["*://kitsu.io/anime/*"],
+      "js": ["site_scripts/kitsu_script.js"]
+    },
+    {
+      "matches": ["*://anidb.net/anime/*"],
+      "js": ["site_scripts/anidb_script.js"]
+    },
+    {
+      "matches": ["*://www.anisearch.com/anime/*"],
+      "js": ["site_scripts/anisearch_script.js"]
+    }
+  ],
+  "commands": {
+    "send-key": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Send request to Sonarr/Radarr"
+    }
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_title": "Moeradar"
+  },
+  "permissions": ["notifications", "storage", "tabs", "<all_urls>"]
+}
