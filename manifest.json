@@ -10,11 +10,23 @@
   "content_scripts": [
     {
       "matches": ["*://myanimelist.net/*"],
-      "js": ["mal_script.js"]
+      "js": ["site_scripts/mal_script.js"]
     },
     {
       "matches": ["*://anilist.co/*"],
-      "js": ["anilist_script.js"]
+      "js": ["site_scripts/anilist_script.js"]
+    },
+    {
+      "matches": ["*://kitsu.io/*"],
+      "js": ["site_scripts/kitsu_script.js"]
+    },
+    {
+      "matches": ["*://anidb.net/*"],
+      "js": ["site_scripts/anidb_script.js"]
+    },
+    {
+      "matches": ["*://www.anisearch.com/*"],
+      "js": ["site_scripts/anisearch_script.js"]
     }
   ],
   "browser_specific_settings": {
@@ -24,11 +36,11 @@
     }
   },
   "commands": {
-    "toggle-feature": {
+    "send-key": {
       "suggested_key": {
         "default": "Alt+Q"
       },
-      "description": "Ereignis 'toggle-feature' senden"
+      "description": "Send request to Sonarr/Radarr"
     }
   },
   "browser_action": {

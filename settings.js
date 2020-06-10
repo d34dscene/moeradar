@@ -3,17 +3,21 @@ function saveOptions() {
     sonarr_api: document.querySelector("#sonarr_api").value,
     sonarr_url: document.querySelector("#sonarr_url").value,
     sonarr_path: document.querySelector("#sonarr_path").value,
+    sonarr_profile: document.querySelector("#sonarr_quality").value,
     sonarr_quality: document.querySelector("#sonarr_quality").options[
       document.querySelector("#sonarr_quality").value
     ].text,
+
     radarr_api: document.querySelector("#radarr_api").value,
     radarr_url: document.querySelector("#radarr_url").value,
     radarr_path: document.querySelector("#radarr_path").value,
+    radarr_profile: document.querySelector("#radarr_quality").value,
     radarr_quality: document.querySelector("#radarr_quality").options[
       document.querySelector("#radarr_quality").value
     ].text,
   });
 }
+
 function restoreOptions() {
   function setCurrentChoice(result) {
     getDropdownDataSonarr(result.sonarr_url, result.sonarr_api);
@@ -25,9 +29,12 @@ function restoreOptions() {
     document.querySelector("#sonarr_path").value = result.sonarr_path || "";
     document.querySelector("#radarr_path").value = result.radarr_path || "";
     document.querySelector("#sonarr_quality").options[0].text =
-      result.sonarr_quality;
+      result.sonarr_quality || "Choose Quality";
     document.querySelector("#radarr_quality").options[0].text =
-      result.radarr_quality;
+      result.radarr_quality || "Choose Quality";
+    document.querySelector("#sonarr_quality").value = result.sonarr_profile;
+    document.querySelector("#radarr_quality").value = result.radarr_profile;
+    console.log(result.sonarr_profile);
   }
 
   function onError(error) {
@@ -43,6 +50,8 @@ function restoreOptions() {
     "radarr_path",
     "sonarr_quality",
     "radarr_quality",
+    "sonarr_profile",
+    "radarr_profile",
   ]);
   getter.then(setCurrentChoice, onError);
 }
