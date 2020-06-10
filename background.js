@@ -132,7 +132,7 @@ Promise.resolve(
  * Decide media type
  */
 function decide(title, type) {
-  if (["TV", "tv_show"].indexOf(type) >= 0) {
+  if (["TV", "tv_show", "TV-Series"].indexOf(type) >= 0) {
     return 0;
   }
   if (["Movie", "movie"].indexOf(type) >= 0) {
