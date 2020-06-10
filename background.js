@@ -29,7 +29,7 @@ function trigger(tabs) {
         let dec = decide(response.title, response.media);
         if (dec === 0) {
           if (isResolvedS) {
-            getInfoSonarr(title);
+            getInfoSonarr(response.title);
             browser.notifications.create({
               type: "basic",
               iconUrl: browser.extension.getURL("images/send.svg"),
@@ -47,7 +47,7 @@ function trigger(tabs) {
         }
         if (dec === 1) {
           if (isResolvedR) {
-            getInfoRadarr(title);
+            getInfoRadarr(response.title);
             browser.notifications.create({
               type: "basic",
               iconUrl: browser.extension.getURL("images/send.svg"),
