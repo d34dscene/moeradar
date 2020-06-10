@@ -88,19 +88,20 @@ Promise.resolve(
  * Decide media type
  */
 function decide(title, type) {
+  console.log(sonarr_url);
   if (["TV", "tv_show", "TV-Series"].indexOf(type) >= 0) {
     if (isResolvedS) {
       getInfoSonarr(title);
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("images/send.svg"),
+        iconUrl: browser.extension.getURL("img/send.svg"),
         title: title,
         message: "\nYour request was successfully sent to Sonarr!",
       });
     } else {
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("images/clear.svg"),
+        iconUrl: browser.extension.getURL("img/clear.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Sonarr!",
       });
@@ -110,14 +111,14 @@ function decide(title, type) {
       getInfoRadarr(title);
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("images/send.svg"),
+        iconUrl: browser.extension.getURL("img/send.svg"),
         title: title,
         message: "\nYour request was successfully sent to Radarr!",
       });
     } else {
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("images/clear.svg"),
+        iconUrl: browser.extension.getURL("img/clear.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Radarr!",
       });
@@ -125,7 +126,7 @@ function decide(title, type) {
   } else {
     browser.notifications.create({
       type: "basic",
-      iconUrl: browser.extension.getURL("images/error.svg"),
+      iconUrl: browser.extension.getURL("img/error.svg"),
       title: "Wrong media type",
       message: "\nThat's neither a series nor a movie... B-baka!",
     });
@@ -170,14 +171,7 @@ async function getInfoSonarr(title) {
  * Send a request to Sonarr and add the series
  */
 function sendRequestSonarr(tv, titl, pId, slug, image, season) {
-  data = {};
-
-  if (sonarr_path.endsWith("/")) {
-    sonarr_path = sonarr_path.concat(titl);
-  } else {
-    sonarr_path = sonarr_path.concat("/");
-    sonarr_path = sonarr_path.concat(titl);
-  }
+  sonarr_path = sonarr_path.concat(titl);
 
   let params = {
     tvdbId: tv,
@@ -222,9 +216,9 @@ function sendRequestSonarr(tv, titl, pId, slug, image, season) {
 /*
  * Get necessary info from radarr via movie lookup
  */
-async function getInfoRadarr() {
+async function getInfoRadarr(title) {
   let params = {
-    term: anime_title,
+    term: title,
     apikey: radarr_api,
   };
   let query = Object.keys(params)
@@ -256,13 +250,7 @@ async function getInfoRadarr() {
  * Send a request to Radarr and add the movie
  */
 function sendRequestRadarr(tmdb, titl, pId, slug, image, ye) {
-  data = {};
-  if (radarr_path.endsWith("/")) {
-    radarr_path = radarr_path.concat(titl);
-  } else {
-    radarr_path = radarr_path.concat("/");
-    radarr_path = radarr_path.concat(titl);
-  }
+  radarr_path = radarr_path.concat(titl);
 
   let params = {
     tmdbId: tmdb,

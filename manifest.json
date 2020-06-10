@@ -3,7 +3,7 @@
   "name": "Moeradar",
   "version": "1.0",
   "description": "Add anime directly to sonarr/radarr",
-  "icons": { "48": "images/egg.png" },
+  "icons": { "48": "img/egg.png" },
   "background": {
     "scripts": ["background.js"]
   },

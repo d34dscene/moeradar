@@ -1,16 +1,33 @@
+function correctPath(path) {
+  if (!path.endsWith("/") && path != "") {
+    return path.concat("/");
+  }
+  return path;
+}
+function correctUrl(url) {
+  if (!url.startsWith("http://") && !url.startsWith("https://") && url != "") {
+    return "http://" + url;
+  }
+  return url;
+}
+
 function saveOptions() {
+  let sUrl = correctUrl(document.querySelector("#sonarr_url").value);
+  let rUrl = correctUrl(document.querySelector("#radarr_url").value);
+  let sPath = correctPath(document.querySelector("#sonarr_path").value);
+  let rPath = correctPath(document.querySelector("#radarr_path").value);
   browser.storage.sync.set({
     sonarr_api: document.querySelector("#sonarr_api").value,
-    sonarr_url: document.querySelector("#sonarr_url").value,
-    sonarr_path: document.querySelector("#sonarr_path").value,
+    sonarr_url: sUrl,
+    sonarr_path: sPath,
     sonarr_profile: document.querySelector("#sonarr_quality").value,
     sonarr_quality: document.querySelector("#sonarr_quality").options[
       document.querySelector("#sonarr_quality").value
     ].text,
 
     radarr_api: document.querySelector("#radarr_api").value,
-    radarr_url: document.querySelector("#radarr_url").value,
-    radarr_path: document.querySelector("#radarr_path").value,
+    radarr_url: rUrl,
+    radarr_path: rPath,
     radarr_profile: document.querySelector("#radarr_quality").value,
     radarr_quality: document.querySelector("#radarr_quality").options[
       document.querySelector("#radarr_quality").value
@@ -20,8 +37,13 @@ function saveOptions() {
 
 function restoreOptions() {
   function setCurrentChoice(result) {
-    getDropdownDataSonarr(result.sonarr_url, result.sonarr_api);
-    getDropdownDataRadarr(result.radarr_url, result.radarr_api);
+    if ([result.sonarr_url, result.sonarr_api].every(Boolean)) {
+      getDropdownDataSonarr(result.sonarr_url, result.sonarr_api);
+    }
+    if ([result.radarr_url, result.radarr_api].every(Boolean)) {
+      getDropdownDataRadarr(result.radarr_url, result.radarr_api);
+    }
+
     document.querySelector("#sonarr_api").value = result.sonarr_api || "";
     document.querySelector("#radarr_api").value = result.radarr_api || "";
     document.querySelector("#sonarr_url").value = result.sonarr_url || "";
@@ -34,7 +56,6 @@ function restoreOptions() {
       result.radarr_quality || "Choose Quality";
     document.querySelector("#sonarr_quality").value = result.sonarr_profile;
     document.querySelector("#radarr_quality").value = result.radarr_profile;
-    console.log(result.sonarr_profile);
   }
 
   function onError(error) {
@@ -116,18 +137,6 @@ function getDropdownDataRadarr(url, api) {
       console.log("request failed", error);
     });
 }
-function reload() {
-  location.reload();
-}
+
 document.addEventListener("submit", saveOptions);
-var elem = document.querySelector("form");
-elem.onkeydown = function () {
-  saveOptions();
-};
-elem.onpaste = function () {
-  saveOptions();
-};
-elem.onkeyup = function () {
-  saveOptions();
-};
 window.addEventListener("load", restoreOptions);
