@@ -19,7 +19,7 @@ chrome.browserAction.onClicked.addListener(function () {
 chrome.commands.onCommand.addListener(function (command) {
   if (command == "send-key") {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { yay: "pressed shortcut" }, function (response) {
+      chrome.tabs.sendMessage(tabs[0].id, { info: "pressed shortcut" }, function (response) {
         decide(response.title, response.media);
       });
     });
