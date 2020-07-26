@@ -1,18 +1,20 @@
 /*
- * Loading necessary data from website into global variables
+ * Loading necessary data from website
  */
 function loadData() {
-  anime_title = document
-    .querySelector('meta[property="og:title"]')
-    ["content"].replaceAll('"', "")
+  let anime_title = document
+    .querySelector('meta[property="og:title"]')["content"].replaceAll('"', "")
     .split(" (")[0];
-  type = document
+  let type = document
     .getElementById("infodetails")
     .getElementsByTagName("li")[0]
     .innerHTML.split("</span>")[1];
+  return [anime_title, type];
 }
 
 browser.runtime.onMessage.addListener((request) => {
-  loadData();
-  return Promise.resolve({ title: anime_title, media: type });
+  return Promise.resolve({
+    title: loadData()[0],
+    media: loadData()[1]
+  });
 });

@@ -1,43 +1,33 @@
+var sonarr_api = document.querySelector("#sonarr_api");
+var radarr_api = document.querySelector("#radarr_api");
+var sonarr_url = document.querySelector("#sonarr_url");
+var radarr_url = document.querySelector("#radarr_url");
+var sonarr_path = document.querySelector("#sonarr_path");
+var radarr_path = document.querySelector("#radarr_path");
 var sonarr_profile_id = document.querySelector("#sonarr_quality");
 var radarr_profile_id = document.querySelector("#radarr_quality");
-sonarr_profile_id.onchange = saveOptions;
-radarr_profile_id.onchange = saveOptions;
 
-function correctPath(path) {
-  if (!path.endsWith("/") && path != "") {
-    return path.concat("/");
-  }
-  return path;
-}
-function correctUrl(url) {
-  if (!url.startsWith("http://") && !url.startsWith("https://") && url != "") {
-    return "http://" + url;
-  }
-  return url;
-}
+let correctPath = path => path.endsWith("/") ? path : path.concat("/");
+let correctUrl = url => !url.startsWith("http://") && !url.startsWith("https://") ? "http://" + url : url;
 
 function saveOptions() {
-  let sUrl = correctUrl(document.querySelector("#sonarr_url").value);
-  let rUrl = correctUrl(document.querySelector("#radarr_url").value);
-  let sPath = correctPath(document.querySelector("#sonarr_path").value);
-  let rPath = correctPath(document.querySelector("#radarr_path").value);
   browser.storage.sync.set({
-    sonarr_api: document.querySelector("#sonarr_api").value,
-    sonarr_url: sUrl,
-    sonarr_path: sPath,
+    sonarr_api: sonarr_api.value,
+    sonarr_url: sonarr_url.value !== "" ? correctUrl(sonarr_url.value) : sonarr_url.value,
+    sonarr_path: sonarr_path.value !== "" ? correctPath(sonarr_path.value) : sonarr_path.value,
     sonarr_profile: sonarr_profile_id.value,
-    sonarr_quality: sonarr_profile_id[sonarr_profile_id.value].text,
+    sonarr_quality: sonarr_profile_id.options[sonarr_profile_id.value].text,
 
-    radarr_api: document.querySelector("#radarr_api").value,
-    radarr_url: rUrl,
-    radarr_path: rPath,
+    radarr_api: radarr_api.value,
+    radarr_url: radarr_url.value !== "" ? correctUrl(radarr_url.value) : radarr_url.value,
+    radarr_path: radarr_path.value !== "" ? correctPath(radarr_path.value) : radarr_path.value,
     radarr_profile: radarr_profile_id.value,
-    radarr_quality: radarr_profile_id[radarr_profile_id.value].text,
+    radarr_quality: radarr_profile_id.options[radarr_profile_id.value].text,
   });
 }
 
 function restoreOptions() {
-  function setCurrentChoice(result) {
+  let restore = result => {
     if ([result.sonarr_url, result.sonarr_api].every(Boolean)) {
       getDropdownDataSonarr(result.sonarr_url, result.sonarr_api);
     }
@@ -45,23 +35,17 @@ function restoreOptions() {
       getDropdownDataRadarr(result.radarr_url, result.radarr_api);
     }
 
-    document.querySelector("#sonarr_api").value = result.sonarr_api || "";
-    document.querySelector("#radarr_api").value = result.radarr_api || "";
-    document.querySelector("#sonarr_url").value = result.sonarr_url || "";
-    document.querySelector("#radarr_url").value = result.radarr_url || "";
-    document.querySelector("#sonarr_path").value = result.sonarr_path || "";
-    document.querySelector("#radarr_path").value = result.radarr_path || "";
-    document.querySelector("#sonarr_quality").value = result.sonarr_profile;
-    document.querySelector("#radarr_quality").value = result.radarr_profile;
-    document.querySelector("#sonarr_quality").options[0].text =
-      result.sonarr_quality;
-    document.querySelector("#radarr_quality").options[0].text =
-      result.radarr_quality;
-  }
-
-  function onError(error) {
-    console.log(`Error: ${error}`);
-  }
+    sonarr_api.value = result.sonarr_api || "";
+    radarr_api.value = result.radarr_api || "";
+    sonarr_url.value = result.sonarr_url || "";
+    radarr_url.value = result.radarr_url || "";
+    sonarr_path.value = result.sonarr_path || "";
+    radarr_path.value = result.radarr_path || "";
+    sonarr_profile_id.value = result.sonarr_profile || 0;
+    radarr_profile_id.value = result.radarr_profile || 0;
+    sonarr_profile_id.options[0].text = result.sonarr_quality || "Choose Quality";
+    radarr_profile_id.options[0].text = result.radarr_quality || "Choose Quality";
+  };
 
   let getter = browser.storage.sync.get([
     "sonarr_api",
@@ -75,10 +59,10 @@ function restoreOptions() {
     "sonarr_profile",
     "radarr_profile",
   ]);
-  getter.then(setCurrentChoice, onError);
+  getter.then(restore);
 }
+
 async function getDropdownDataSonarr(url, api) {
-  let sonarr_dropdown = document.getElementById("sonarr_quality");
 
   let auth = {
     apikey: api,
@@ -86,12 +70,11 @@ async function getDropdownDataSonarr(url, api) {
   let query = Object.keys(auth)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(auth[k]))
     .join("&");
-
   let urls = url.concat("/api/profile?") + query;
 
   fetch(urls, {
-    method: "GET",
-  })
+      method: "GET",
+    })
     .then((data) => data.text())
     .then((json) => {
       var data = JSON.parse(json);
@@ -100,7 +83,7 @@ async function getDropdownDataSonarr(url, api) {
         option = document.createElement("option");
         option.text = data[i].name;
         option.value = data[i].id;
-        sonarr_dropdown.add(option);
+        sonarr_profile_id.add(option);
       }
     })
     .catch(function (error) {
@@ -108,8 +91,7 @@ async function getDropdownDataSonarr(url, api) {
     });
 }
 
-function getDropdownDataRadarr(url, api) {
-  let radarr_dropdown = document.getElementById("radarr_quality");
+async function getDropdownDataRadarr(url, api) {
 
   let auth = {
     apikey: api,
@@ -117,12 +99,11 @@ function getDropdownDataRadarr(url, api) {
   let query = Object.keys(auth)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(auth[k]))
     .join("&");
-
   let urls = url.concat("/api/profile?") + query;
 
   fetch(urls, {
-    method: "GET",
-  })
+      method: "GET",
+    })
     .then((data) => data.text())
     .then((json) => {
       var data = JSON.parse(json);
@@ -131,7 +112,7 @@ function getDropdownDataRadarr(url, api) {
         option = document.createElement("option");
         option.text = data[i].name;
         option.value = data[i].id;
-        radarr_dropdown.add(option);
+        radarr_profile_id.add(option);
       }
     })
     .catch(function (error) {
@@ -141,3 +122,5 @@ function getDropdownDataRadarr(url, api) {
 
 document.addEventListener("submit", saveOptions);
 window.addEventListener("load", restoreOptions);
+//sonarr_profile_id.onchange = saveOptions;
+//radarr_profile_id.onchange = saveOptions;
