@@ -5,7 +5,7 @@ Click on the extension icon to set the necessary settings. Quality Profiles will
 
 After that you can go to one of these sites, select an anime and press **Alt+Q**, this shortcut will trigger a request and you'll be notified if your request was sent. (Manually changing the shortcut isn't currently supported but will be added in the future)
 
-Currently Supported *(more will follow)*:
+Currently Supported:
 - MyAnimeList
 - Anilist
 - AniDB
