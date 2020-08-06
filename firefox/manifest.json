@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Moeradar",
-  "version": "1.0",
+  "version": "1.2",
   "description": "Add anime directly to sonarr/radarr",
   "icons": {
     "96": "img/egg.png"
