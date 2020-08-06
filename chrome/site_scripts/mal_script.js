@@ -1,17 +1,19 @@
 /*
- * Loading necessary data from website into global variables
+ * Loading necessary data from website
  */
 function loadData() {
-  anime_title = document
+  let anime_title = document
     .querySelector("title")
     .text.split(" -")[0]
     .replaceAll("\n", "");
-  type = document
-    .querySelector('meta[property="og:type"]')
-    ["content"].split(".")[1];
+  let type = document
+    .querySelector('meta[property="og:type"]')["content"].split(".")[1];
+  return [anime_title, type];
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  loadData();
-  sendResponse({ title: anime_title, media: type });
+browser.runtime.onMessage.addListener((request) => {
+  return Promise.resolve({
+    title: loadData()[0],
+    media: loadData()[1]
+  });
 });

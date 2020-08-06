@@ -1,16 +1,20 @@
 /*
- * Loading necessary data from website into global variables
+ * Loading necessary data from website
  */
 function loadData() {
-  anime_title = document
+  let anime_title = document
     .querySelector('div[class="content"]>h1')
     .textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
-  type = document
+  let type = document
     .querySelector('div[class="data-set"]')
     .childNodes[2].textContent.replace(/(\t|\r\n|\n|\r)/gm, "");
+  console.log(anime_title, type);
+  return [anime_title, type];
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  loadData();
-  sendResponse({ title: anime_title, media: type });
+browser.runtime.onMessage.addListener((request) => {
+  return Promise.resolve({
+    title: loadData()[0],
+    media: loadData()[1]
+  });
 });

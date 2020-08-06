@@ -1,11 +1,5 @@
-/* Waiting for user input */
-
-function onError(error) {
-  console.log(`Error: ${error}`);
-}
-
 /*
- * Get to settings page
+ * Open settings page
  */
 chrome.browserAction.onClicked.addListener(function () {
   chrome.tabs.create({
@@ -18,98 +12,89 @@ chrome.browserAction.onClicked.addListener(function () {
  */
 chrome.commands.onCommand.addListener(function (command) {
   if (command == "send-key") {
-    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { info: "pressed shortcut" }, function (response) {
+    chrome.tabs.query({
+      currentWindow: true,
+      active: true
+    }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        info: "pressed shortcut"
+      }, function (response) {
         decide(response.title, response.media);
       });
     });
   }
 });
 
-/* Sending data pipeline */
-
 /*
  * Loading necessary data from settings into global variables
  */
+function getSettings() {
+  let moe = chrome.storage.sync.get()
+    .then((result) => {
+      sonarr_url = result.sonarr_url;
+      sonarr_api = result.sonarr_api;
+      sonarr_path = result.sonarr_path;
+      sonarr_profile = result.sonarr_profile;
+      radarr_url = result.radarr_url;
+      radarr_api = result.radarr_api;
+      radarr_path = result.radarr_path;
+      radarr_profile = result.radarr_profile;
+      [sonarr_url, sonarr_api, sonarr_path, sonarr_profile].every(Boolean) ? rsv_sonarr = true : rsv_sonarr = false;
+      [radarr_url, radarr_api, radarr_path, radarr_profile].every(Boolean) ? rsv_radarr = true : rsv_radarr = false;
+    })
+    .catch((error) => {
+      console.log("Something went wrong :/", error);
+    });
 
-chrome.storage.sync.get(
-  [
-    "sonarr_url",
-    "sonarr_api",
-    "sonarr_path",
-    "sonarr_profile",
-    "radarr_url",
-    "radarr_api",
-    "radarr_path",
-    "radarr_profile",
-  ],
-  function (result) {
-    sonarr_url = result.sonarr_url;
-    sonarr_api = result.sonarr_api;
-    sonarr_path = result.sonarr_path;
-    sonarr_profile = result.sonarr_profile;
-    radarr_url = result.radarr_url;
-    radarr_api = result.radarr_api;
-    radarr_path = result.radarr_path;
-    radarr_profile = result.radarr_profile;
-    if ([sonarr_url, sonarr_api, sonarr_path, sonarr_profile].every(Boolean)) {
-      isResolvedS = true;
-    } else {
-      isResolvedS = false;
-    }
-    if ([radarr_url, radarr_api, radarr_path, radarr_profile].every(Boolean)) {
-      isResolvedR = true;
-    } else {
-      isResolvedR = false;
-    }
-  }
-);
+  return moe;
+}
 
 /*
  * Decide media type
  */
-function decide(title, type) {
-  if (["TV", "tv_show", "TV-Series"].indexOf(type) >= 0) {
-    if (isResolvedS) {
-      //getInfoSonarr(title);
+async function decide(title, type) {
+  console.log("Sending Request for " + title + "...");
+  let series_type = ["TV", "tv_show", "TV-Series"].indexOf(type) >= 0;
+  let movie_type = ["Movie", "movie"].indexOf(type) >= 0;
+
+  await getSettings();
+
+  if (series_type) {
+    if (rsv_sonarr) {
+      getInfoSonarr(title);
       chrome.notifications.create({
-          type: "basic",
-          iconUrl: chrome.extension.getURL("img/send.svg"),
-          title: title,
-          message: "\nYour request was successfully sent to Sonarr!",
-        });
+        type: "basic",
+        iconUrl: chrome.extension.getURL("/img/send.svg"),
+        title: title,
+        message: "\nYour request was successfully sent to Sonarr!",
+      });
     } else {
       chrome.notifications.create({
         type: "basic",
-        iconUrl: chrome.extension.getURL("img/clear.svg"),
+        iconUrl: chrome.extension.getURL("/img/error.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Sonarr!",
       });
     }
-  } else if (["Movie", "movie"].indexOf(type) >= 0) {
-    if (isResolvedR) {
+  }
+
+  if (movie_type) {
+    if (rsv_radarr) {
       getInfoRadarr(title);
       chrome.notifications.create({
         type: "basic",
-        iconUrl: chrome.extension.getURL("img/send.svg"),
+        iconUrl: chrome.extension.getURL("/img/send.svg"),
         title: title,
         message: "\nYour request was successfully sent to Radarr!",
       });
     } else {
       chrome.notifications.create({
         type: "basic",
-        iconUrl: chrome.extension.getURL("img/clear.svg"),
+        iconUrl: chrome.extension.getURL("/img/error.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Radarr!",
       });
     }
-  } else {
-    chrome.notifications.create({
-      type: "basic",
-      iconUrl: chrome.extension.getURL("img/error.svg"),
-      title: "Wrong media type",
-      message: "\nThat's neither a series nor a movie... B-baka!",
-    });
   }
 }
 
@@ -128,8 +113,8 @@ async function getInfoSonarr(title) {
   let url = sonarr_url.concat("/api/series/lookup?") + query;
 
   fetch(url, {
-    method: "GET",
-  })
+      method: "GET",
+    })
     .then((data) => data.text())
     .then((json) => {
       var parse_me = JSON.parse(json)[0];
@@ -150,16 +135,16 @@ async function getInfoSonarr(title) {
 /*
  * Send a request to Sonarr and add the series
  */
-function sendRequestSonarr(tv, titl, pId, slug, image, season) {
-  sonarr_path = sonarr_path.concat(titl);
+function sendRequestSonarr(req_tvdbId, req_title, req_profileId, req_titleSlug, req_images, req_seasons) {
+  let sonarr_path = this.sonarr_path.concat(req_title);
 
   let params = {
-    tvdbId: tv,
-    title: titl,
-    profileId: pId,
-    titleSlug: slug,
-    images: image,
-    seasons: season,
+    tvdbId: req_tvdbId,
+    title: req_title,
+    profileId: req_profileId,
+    titleSlug: req_titleSlug,
+    images: req_images,
+    seasons: req_seasons,
     qualityProfileId: sonarr_profile,
     path: sonarr_path,
     seasonFolder: true,
@@ -178,16 +163,13 @@ function sendRequestSonarr(tv, titl, pId, slug, image, season) {
   let url = sonarr_url.concat("/api/series?") + query;
 
   fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(params),
-  })
-    .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Sonarr!", json);
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
     })
+    .then((data) => data.json())
     .catch(function (error) {
       console.log("request failed", error);
     });
@@ -207,8 +189,8 @@ async function getInfoRadarr(title) {
   let url = radarr_url.concat("/api/movie/lookup?") + query;
 
   fetch(url, {
-    method: "GET",
-  })
+      method: "GET",
+    })
     .then((data) => data.text())
     .then((json) => {
       var parse_me = JSON.parse(json)[0];
@@ -229,16 +211,16 @@ async function getInfoRadarr(title) {
 /*
  * Send a request to Radarr and add the movie
  */
-function sendRequestRadarr(tmdb, titl, pId, slug, image, ye) {
-  radarr_path = radarr_path.concat(titl);
+function sendRequestRadarr(req_tmdbId, req_title, req_profileId, req_titleSlug, req_images, req_year) {
+  let radarr_path = this.radarr_path.concat(req_title);
 
   let params = {
-    tmdbId: tmdb,
-    title: titl,
-    profileId: pId,
-    titleSlug: slug,
-    images: image,
-    year: ye,
+    tmdbId: req_tmdbId,
+    title: req_title,
+    profileId: req_profileId,
+    titleSlug: req_titleSlug,
+    images: req_images,
+    year: req_year,
     qualityProfileId: radarr_profile,
     path: radarr_path,
     monitored: true,
@@ -254,16 +236,13 @@ function sendRequestRadarr(tmdb, titl, pId, slug, image, ye) {
   let url = radarr_url.concat("/api/movie?") + query;
 
   fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(params),
-  })
-    .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Radarr!", json);
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
     })
+    .then((data) => data.json())
     .catch(function (error) {
       console.log("request failed", error);
     });

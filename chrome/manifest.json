@@ -1,14 +1,15 @@
 {
   "manifest_version": 2,
   "name": "Moeradar",
-  "version": "1.0",
+  "version": "1.2.1",
   "description": "Add anime directly to sonarr/radarr",
-  "icons": { "48": "img/egg.png" },
+  "icons": {
+    "96": "img/egg.png"
+  },
   "background": {
     "scripts": ["background.js"]
   },
-  "content_scripts": [
-    {
+  "content_scripts": [{
       "matches": ["*://myanimelist.net/anime/*"],
       "js": ["site_scripts/mal_script.js"]
     },
@@ -41,5 +42,10 @@
     "browser_style": true,
     "default_title": "Moeradar"
   },
-  "permissions": ["notifications", "storage", "tabs", "<all_urls>"]
+  "permissions": [
+    "notifications",
+    "storage",
+    "tabs",
+    "<all_urls>"
+  ]
 }
