@@ -7,7 +7,7 @@ var radarr_path = document.querySelector("#radarr_path");
 var sonarr_profile_id = document.querySelector("#sonarr_quality");
 var radarr_profile_id = document.querySelector("#radarr_quality");
 
-let correctPath = path => path.endsWith("/") ? path : path.concat("/");
+let correctPath = path => !path.endsWith("/") ? path.concat("/") : !path.startsWith("/") ? "/" + path : path;
 let correctUrl = url => !url.startsWith("http://") && !url.startsWith("https://") ? "http://" + url : url;
 
 function saveOptions() {
@@ -120,7 +120,5 @@ async function getDropdownDataRadarr(url, api) {
     });
 }
 
-document.addEventListener("submit", saveOptions);
+window.addEventListener("beforeunload", saveOptions);
 window.addEventListener("load", restoreOptions);
-//sonarr_profile_id.onchange = saveOptions;
-//radarr_profile_id.onchange = saveOptions;

@@ -1,21 +1,10 @@
-/* Waiting for user input */
-
-function onCreated(tab) {
-  console.log(`Created new tab: ${tab.id}`);
-}
-
-function onError(error) {
-  console.log(`Error: ${error}`);
-}
-
 /*
- * Get to settings page
+ * Open settings page
  */
 browser.browserAction.onClicked.addListener(function () {
-  var creating = browser.tabs.create({
+  browser.tabs.create({
     url: "settings.html",
   });
-  creating.then(onCreated, onError);
 });
 
 /*
@@ -29,7 +18,9 @@ browser.commands.onCommand.addListener(function (command) {
         active: true,
       })
       .then(trigger)
-      .catch(onError);
+      .catch((error) => {
+        console.log("Something went wrong :/", error);
+      });
   }
 });
 
@@ -45,59 +36,59 @@ function trigger(tabs) {
       .then((response) => {
         decide(response.title, response.media);
       })
-      .catch(onError);
+      .catch((error) => {
+        console.log("Something went wrong :/", error);
+      });
   }
 }
-
-/* Sending data pipeline */
 
 /*
  * Loading necessary data from settings into global variables
  */
-Promise.resolve(
-  browser.storage.sync.get([
-    "sonarr_url",
-    "sonarr_api",
-    "sonarr_path",
-    "sonarr_profile",
-    "radarr_url",
-    "radarr_api",
-    "radarr_path",
-    "radarr_profile",
-  ])
-).then(function (result) {
-  sonarr_url = result.sonarr_url;
-  sonarr_api = result.sonarr_api;
-  sonarr_path = result.sonarr_path;
-  sonarr_profile = result.sonarr_profile;
-  radarr_url = result.radarr_url;
-  radarr_api = result.radarr_api;
-  radarr_path = result.radarr_path;
-  radarr_profile = result.radarr_profile;
-  [sonarr_url, sonarr_api, sonarr_path, sonarr_profile].every(Boolean) ? rsv_sonarr = true : rsv_sonarr = false;
-  [radarr_url, radarr_api, radarr_path, radarr_profile].every(Boolean) ? rsv_radarr = true : rsv_radarr = false;
-});
+function getSettings() {
+  let moe = browser.storage.sync.get()
+    .then((result) => {
+      sonarr_url = result.sonarr_url;
+      sonarr_api = result.sonarr_api;
+      sonarr_path = result.sonarr_path;
+      sonarr_profile = result.sonarr_profile;
+      radarr_url = result.radarr_url;
+      radarr_api = result.radarr_api;
+      radarr_path = result.radarr_path;
+      radarr_profile = result.radarr_profile;
+      [sonarr_url, sonarr_api, sonarr_path, sonarr_profile].every(Boolean) ? rsv_sonarr = true : rsv_sonarr = false;
+      [radarr_url, radarr_api, radarr_path, radarr_profile].every(Boolean) ? rsv_radarr = true : rsv_radarr = false;
+    })
+    .catch((error) => {
+      console.log("Something went wrong :/", error);
+    });
+
+  return moe;
+}
 
 /*
  * Decide media type
  */
-function decide(title, type) {
+async function decide(title, type) {
+  console.log("Sending Request for " + title + "...");
   let series_type = ["TV", "tv_show", "TV-Series"].indexOf(type) >= 0;
   let movie_type = ["Movie", "movie"].indexOf(type) >= 0;
+
+  await getSettings();
 
   if (series_type) {
     if (rsv_sonarr) {
       getInfoSonarr(title);
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("img/send.svg"),
+        iconUrl: browser.extension.getURL("/img/send.svg"),
         title: title,
         message: "\nYour request was successfully sent to Sonarr!",
       });
     } else {
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("img/clear.svg"),
+        iconUrl: browser.extension.getURL("/img/error.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Sonarr!",
       });
@@ -109,14 +100,14 @@ function decide(title, type) {
       getInfoRadarr(title);
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("img/send.svg"),
+        iconUrl: browser.extension.getURL("/img/send.svg"),
         title: title,
         message: "\nYour request was successfully sent to Radarr!",
       });
     } else {
       browser.notifications.create({
         type: "basic",
-        iconUrl: browser.extension.getURL("img/clear.svg"),
+        iconUrl: browser.extension.getURL("/img/error.svg"),
         title: "Settings missing",
         message: "\nPlease check your settings for Radarr!",
       });
@@ -196,9 +187,6 @@ function sendRequestSonarr(req_tvdbId, req_title, req_profileId, req_titleSlug, 
       body: JSON.stringify(params),
     })
     .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Sonarr!", json);
-    })
     .catch(function (error) {
       console.log("request failed", error);
     });
@@ -272,9 +260,6 @@ function sendRequestRadarr(req_tmdbId, req_title, req_profileId, req_titleSlug, 
       body: JSON.stringify(params),
     })
     .then((data) => data.json())
-    .then((json) => {
-      console.log("Sent to Radarr!", json);
-    })
     .catch(function (error) {
       console.log("request failed", error);
     });

@@ -4,96 +4,115 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
-<body style="padding: 2em;">
-  <div class="container content text-light">
+<body class="bg-light">
 
-    <form id="sonarr_form">
+  <!-- Menu -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="/img/egg.png" width="25" alt="logo" loading="lazy"></a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sonarr">Sonarr</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#radarr">Radarr</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#about">About</a>
+          </li>
+        </ul>
+        <a class="navbar-text" href="https://github.com/NCRoxas/moeradar"><i class="fab fa-github-alt"></i></a>
+      </div>
+    </div>
+  </nav>
 
-      <div class="card col-12 mb-5 bg-transparent">
-        <div class="card-body special-card">
-          <h5 class="card-title">Sonarr</h5>
-          <div class="form-group">
-            <div class="row">
-              <div class="col-12">
-                <label for="sonarr_url">URL</label>
-                <input type="text" class="form-control" id="sonarr_url">
-              </div>
-              <div class="col-12">
-                <label for="sonarr_api">API</label>
-                <input type="text" class="form-control" id="sonarr_api">
-                <small id="sonarrHelp" class="form-text text-light mb-3">
-                  You can find the key in Settings > General > API Key
-                </small>
-              </div>
-              <div class="col-6">
-                <label for="sonarr_path">Path</label>
-                <input type="text" class="form-control" id="sonarr_path">
-                <small id="sonarrHelp" class="form-text text-light mb-3">
-                  Example: /sonarr/series/
-                </small>
-              </div>
-              <div class="col-6">
-                <label for="sonarr_quality">Quality Profile</label>
-                <select class="custom-select" id="sonarr_quality">
-                  <option value="0">Choose Quality</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <input type="submit" class="btn btn-primary col-lg-1" value="Save"></input>
-              </div>
-            </div>
+  <!-- Settings -->
+  <div class="container-fluid tab-content">
+    <form class="tab-pane fade show active col-6" id="sonarr" role="tabpanel">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-12 mb-1">
+            <label for="sonarr_url" class="font-weight-light">Sonarr URL</label>
+            <input type="text" class="form-control" id="sonarr_url">
+            <small id="sonarrHelp" class="form-text mb-3">
+              Example: https://sonarr.yourdomain.com
+            </small>
+          </div>
+          <div class="col-12 mb-1">
+            <label for="sonarr_api" class="font-weight-light">Sonarr API</label>
+            <input type="text" class="form-control" id="sonarr_api">
+            <small id="sonarrHelp" class="form-text mb-3">
+              You can find the key in Settings > General > API Key
+            </small>
+          </div>
+          <div class="col-6">
+            <label for="sonarr_path" class="font-weight-light">Path</label>
+            <input type="text" class="form-control" id="sonarr_path">
+            <small id="sonarrHelp" class="form-text mb-3">
+              Example: /sonarr/series/
+            </small>
+          </div>
+          <div class="col-6">
+            <label for="sonarr_quality" class="font-weight-light">Quality Profile</label>
+            <select class="form-select" id="sonarr_quality">
+              <option value="0">Choose Quality</option>
+            </select>
           </div>
         </div>
       </div>
     </form>
 
-    <form id="radarr_form">
-      <div class="card col-12 mb-3 bg-transparent">
-        <div class="card-body special-card">
-          <h5 class="card-title">Radarr</h5>
-          <div class="form-group">
-            <div class="row">
-              <div class="col-12">
-                <label for="radarr_url">URL</label>
-                <input type="text" class="form-control" id="radarr_url">
-              </div>
-              <div class="col-12">
-                <label for="radarr_api">API</label>
-                <input type="text" class="form-control" id="radarr_api">
-                <small id="RadarrHelp" class="form-text text-light mb-3">
-                  You can find the key in Settings > General > API Key
-                </small>
-              </div>
-              <div class="col-6">
-                <label for="radarr_path">Path</label>
-                <input type="text" class="form-control" id="radarr_path">
-                <small id="sonarrHelp" class="form-text text-light mb-3">
-                  Example: /radarr/movies/
-                </small>
-              </div>
-              <div class="col-6">
-                <label for="radarr_quality">Quality Profile</label>
-                <select class="custom-select" id="radarr_quality">
-                  <option value="0">Choose Quality</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <input type="submit" class="btn btn-primary col-lg-1" value="Save"></input>
-              </div>
-            </div>
+    <form class="tab-pane fade col-6" id="radarr" role="tabpanel">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-12 mb-1">
+            <label for="radarr_url" class="font-weight-light">Radarr URL</label>
+            <input type="text" class="form-control" id="radarr_url">
+            <small id="sonarrHelp" class="form-text mb-3">
+              Example: https://radarr.yourdomain.com
+            </small>
+          </div>
+          <div class="col-12 mb-1">
+            <label for="radarr_api" class="font-weight-light">Radarr API</label>
+            <input type="text" class="form-control" id="radarr_api">
+            <small id="RadarrHelp" class="form-text mb-3">
+              You can find the key in Settings > General > API Key
+            </small>
+          </div>
+          <div class="col-6">
+            <label for="radarr_path" class="font-weight-light">Path</label>
+            <input type="text" class="form-control" id="radarr_path">
+            <small id="sonarrHelp" class="form-text mb-3">
+              Example: /radarr/movies/
+            </small>
+          </div>
+          <div class="col-6">
+            <label for="radarr_quality" class="font-weight-light">Quality Profile</label>
+            <select class="form-select" id="radarr_quality">
+              <option value="0">Choose Quality</option>
+            </select>
           </div>
         </div>
       </div>
     </form>
-
+    <div class="tab-pane fade col-6" id="about" role="tabpanel">
+      Moeradar v1.2 </br>
+      Copyright © by NCRoxas
+    </div>
   </div>
 
-  <script type="text/javascript" src="settings.js"></script>
+  <!-- Scripts -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/settings.js"></script>
 </body>
 
 </html>
