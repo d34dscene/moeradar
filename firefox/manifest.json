@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Moeradar",
-  "version": "1.2.2a",
+  "version": "1.2.3a",
   "description": "Send anime directly to sonarr/radarr",
   "icons": {
     "96": "img/egg.png"
@@ -14,11 +14,11 @@
       "js": ["site_scripts/mal_script.js"]
     },
     {
-      "matches": ["*://anilist.co/anime/*"],
+      "matches": ["*://anilist.co/*"],
       "js": ["site_scripts/anilist_script.js"]
     },
     {
-      "matches": ["*://kitsu.io/anime/*"],
+      "matches": ["*://kitsu.io/*"],
       "js": ["site_scripts/kitsu_script.js"]
     },
     {
