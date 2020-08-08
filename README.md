@@ -20,5 +20,9 @@ Currently Supported:
 - If your Sonarr/Radarr Application is behind Google Oauth 2.0 for authentication, you need to log into Google once with the correct account and it should work accordingly. Don't forget to reload the settings page and choose a quality profile
 - OVA's can't be requested, you have to request the series and manually add specials in Sonarr. Since most anime specials aren't mapped correctly and won't download at all.
 
+### Known Bugs:
+- On Anilist & Kitsu you have to press f5 (reload) once when browsing anime, shortcut should work after that.
+
+
 ### Screenshot:
 ![alt text](https://dev.nightcloud.moe/screenshots-github/moeradar.png "Screenshot")
