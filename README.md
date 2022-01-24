@@ -1,6 +1,4 @@
 # Moeradar
-[![alt text](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png "Firefox Addon")](https://dev.nightcloud.moe/moeradar/moeradar-1.2.3a-an+fx.xpi "Moeradar Firefox edition")
-
 Firefox extension to add anime series/movies to sonarr/radarr. It automatically detects type of media and sends it to the correct application.
 Click on the extension icon to set the necessary settings. Quality Profiles will pop up after URL and API are set. 
 
